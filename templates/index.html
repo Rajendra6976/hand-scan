@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hand Scan App</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #232526 0%, #414345 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            margin-top: 40px;
+            color: #fff;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        #video-container {
+            margin: 30px 0 10px 0;
+            border: 8px solid #fff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            overflow: hidden;
+            background: #111;
+        }
+        #video {
+            display: block;
+            border-radius: 12px;
+        }
+        #result {
+            font-size: 1.5em;
+            margin: 20px;
+            color: #fff;
+            font-weight: bold;
+            min-height: 2em;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        button {
+            background: linear-gradient(90deg, #ff9966 0%, #ff5e62 100%);
+            color: #fff;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            box-shadow: 0 4px 14px 0 rgba(255,153,102,0.2);
+            transition: background 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background: linear-gradient(90deg, #ff5e62 0%, #ff9966 100%);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <h1>Hand Scan App</h1>
+    <div id="video-container">
+        <img id="video" src="/video_feed" width="640" height="480" alt="Webcam stream" />
+    </div>
+    <div id="result"></div>
+    <script>
+        let polling = true;
+        function pollHand() {
+            if (!polling) return;
+            fetch('/scan_hand', {cache: 'no-store'})
+                .then(response => response.json())
+                .then(data => {
+                    if (data.result === 'play') {
+                        document.getElementById('result').innerText = '🖐️ Hand detected! Playing video...';
+                        document.getElementById('video').src = '/play_video';
+                        polling = false;
+                        // Wait for video to finish, then return to webcam
+                        setTimeout(() => {
+                            document.getElementById('video').src = '/video_feed';
+                            document.getElementById('result').innerText = '';
+                            polling = true;
+                            pollHand();
+                        }, 12000); // Estimate video duration (adjust as needed)
+                    } else {
+                        document.getElementById('result').innerText = '';
+                        setTimeout(pollHand, 100); // Poll every 100ms for fastest detection
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('result').innerText = 'Error: ' + error;
+                    setTimeout(pollHand, 2000);
+                });
+        }
+        window.onload = pollHand;
+    </script>
+</body>
+</html>
