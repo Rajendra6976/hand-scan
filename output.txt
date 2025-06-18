@@ -1,0 +1,9 @@
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1750236721.586790   24112 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1750236721.602290   24112 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1750236722.881598   25628 landmark_projection_calculator.cc:186] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+Current working directory: C:\hand_scan-main
+Files in current directory: ['hand_template.png', 'main.py', 'output.txt', 'vid.mp4']
+Hand detected inside template area. Playing video...
+Hand detected inside template area. Playing video...
